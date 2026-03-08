@@ -20,19 +20,20 @@ function formatLesson(lesson) {
 
 async function create(req, res) {
   try {
-    const { title, description, mentorId, status, createdBy } = req.body || {};
+    const { title, description, status } = req.body || {};
     const currentUser = req.user;
 
     if (!title || typeof title !== 'string' || !title.trim()) {
       return res.status(400).json({ success: false, message: 'Title is required' });
     }
 
+    // mentorId and createdBy are set from the authenticated mentor only
     const newLesson = new Lesson({
       title: title.trim(),
       description: (description || '').trim(),
-      mentorId: mentorId != null ? Number(mentorId) : currentUser.user_id,
+      mentorId: currentUser.user_id,
       status: typeof status === 'boolean' ? status : true,
-      createdBy: createdBy != null ? Number(createdBy) : currentUser.user_id,
+      createdBy: currentUser.user_id,
     });
 
     const saved = await newLesson.save();

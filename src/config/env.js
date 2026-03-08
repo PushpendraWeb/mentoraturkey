@@ -4,7 +4,7 @@ const env = {
   port: 2000,
   jwtSecret: 'mentora-jwt-secret-change-in-production',
   jwtExpiresIn: '7d',
-  openaiApiKey: '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' ,
+  openaiApiKey: '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' ,
   llmMaxTextLength: 10000,
 };
 

@@ -46,4 +46,14 @@ function requireParent(req, res, next) {
   next();
 }
 
-module.exports = { auth, requireParent };
+/**
+ * Restrict to Mentor role only (e.g. for creating lessons).
+ */
+function requireMentor(req, res, next) {
+  if (req.user.role_id !== ROLE_ID.MENTOR) {
+    return res.status(403).json({ success: false, message: 'Only mentors can perform this action' });
+  }
+  next();
+}
+
+module.exports = { auth, requireParent, requireMentor };

@@ -27,7 +27,7 @@ const {
   validateAssignLessonIdParam,
   validateLessonIdForSessions,
 } = require('../../validation/assign_lesson.validation.js');
-const { auth } = require('../../middleware/auth.middleware.js');
+const { auth, requireMentor } = require('../../middleware/auth.middleware.js');
 
 const router = express.Router();
 
@@ -35,8 +35,8 @@ const router = express.Router();
 router.get('/getall', getAll);
 router.get('/getbyid/:id', validateLessonIdParam, getById);
 
-// Protected (Authorization: Bearer <token>)
-router.post('/create', auth, validateLessonCreate, create);
+// Lesson creation: Mentor only
+router.post('/create', auth, requireMentor, validateLessonCreate, create);
 router.put('/update', auth, validateLessonUpdate, update);
 router.delete('/delete/:id', auth, validateLessonIdParam, deleteLesson);
 router.get('/getbymentorId/:mentorId', auth, validateMentorIdParam, getByMentorId);

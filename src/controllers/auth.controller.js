@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model.js');
 const env = require('../config/env.js');
-const { ROLE_ID, SIGNUP_ALLOWED_ROLES } = require('../constants/roles.js');
+const { ROLE_ID } = require('../constants/roles.js');
 
 function formatUser(user) {
   const u = user.toObject ? user.toObject() : user;
@@ -24,17 +24,11 @@ function formatUser(user) {
   };
 }
 
-/** Signup: only Parent (1) and Mentor (3) */
+/** Signup: only Parent and Mentor */
 async function signup(req, res) {
   try {
-    const { name, role_id, address, mobile_no, password, createdBy } = req.body || {};
-
-    if (!SIGNUP_ALLOWED_ROLES.includes(Number(role_id))) {
-      return res.status(400).json({
-        success: false,
-        message: 'Only Parent (role_id=1) and Mentor (role_id=3) can sign up. Students are created by parents.',
-      });
-    }
+    const { name, address, mobile_no, password, createdBy } = req.body || {};
+    const role_id = req.signupRoleId; // set by validateSignup (only Parent or Mentor)
 
     const existing = await User.findOne({ mobile_no: (mobile_no || '').trim(), DeletedAt: null });
     if (existing) {
@@ -44,7 +38,7 @@ async function signup(req, res) {
     const hashedPassword = await bcrypt.hash(password || '', 10);
     const newUser = new User({
       name: (name || '').trim(),
-      role_id: Number(role_id),
+      role_id,
       address: (address || '').trim(),
       mobile_no: (mobile_no || '').trim(),
       password: hashedPassword,
