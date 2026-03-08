@@ -1,0 +1,399 @@
+{
+  "info": {
+    "name": "Mentora Turkey API",
+    "description": "Mentora Turkey mentoring platform API. Base URL: {{mentora}} = http://localhost:2000/api/",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "mentora",
+      "value": "http://localhost:2000/api/"
+    },
+    {
+      "key": "auth",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"role_id\": 1,\n  \"address\": \"Optional address\",\n  \"mobile_no\": \"+901234567890\",\n  \"password\": \"yourPassword\",\n  \"createdBy\": null\n}\n"
+            },
+            "url": "{{mentora}}auth/signup",
+            "description": "Register Parent (role_id=1) or Mentor (role_id=3). Returns user + token. Students are created by parents."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile_no\": \"+901234567890\",\n  \"password\": \"yourPassword\"\n}\n"
+            },
+            "url": "{{mentora}}auth/login",
+            "description": "Login with mobile_no and password. Copy returned token to collection variable {{auth}}."
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get By Auth (Current User)",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}user/getbyAuth",
+            "description": "Get current authenticated user. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}user/getall",
+            "description": "List all users (non-deleted). Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}user/getbyid/1",
+            "description": "Get user by user_id. Replace 1 with user_id. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Updated Name\",\n  \"role_id\": 2,\n  \"address\": \"Updated address\",\n  \"mobile_no\": \"+901234567891\",\n  \"status\": true,\n  \"updatedBy\": 1\n}\n"
+            },
+            "url": "{{mentora}}user/update",
+            "description": "Update user by user_id (id in body). Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"DeletedBy\": 1\n}\n"
+            },
+            "url": "{{mentora}}user/delete/1",
+            "description": "Soft delete user by user_id. Replace 1 in URL. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Create Student (Parent Only)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Student Name\",\n  \"address\": \"Optional address\",\n  \"mobile_no\": \"+909876543210\",\n  \"password\": \"studentPassword\"\n}\n"
+            },
+            "url": "{{mentora}}user/create-student",
+            "description": "Only Parent role can create students. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Create User (No Auth)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New User\",\n  \"role_id\": 3,\n  \"address\": \"Address\",\n  \"mobile_no\": \"+901112223334\",\n  \"password\": \"optional\"\n}\n"
+            },
+            "url": "{{mentora}}user/create",
+            "description": "Create user (name, mobile_no, role_id required). No auth."
+          }
+        },
+        {
+          "name": "Get All Users (No Auth)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}user/all",
+            "description": "List all users. No auth."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role",
+      "item": [
+        {
+          "name": "Create Role",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Role_name\": \"Mentor\",\n  \"status\": true,\n  \"createdBy\": 1\n}\n"
+            },
+            "url": "{{mentora}}role/create",
+            "description": "Create role. Role_name required."
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"Role_name\": \"Updated Role Name\",\n  \"status\": true,\n  \"updatedBy\": 1\n}\n"
+            },
+            "url": "{{mentora}}role/update",
+            "description": "Update role by Role_id (id in body)."
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "url": "{{mentora}}role/delete/1",
+            "description": "Soft delete role. Replace 1 with Role_id."
+          }
+        },
+        {
+          "name": "Get All Roles",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}role/getall",
+            "description": "List all roles."
+          }
+        },
+        {
+          "name": "Get Role By ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}role/getbyid/1",
+            "description": "Get role by Role_id. Replace 1 with Role_id."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lessons",
+      "item": [
+        {
+          "name": "Get All Lessons",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}lessons/getall",
+            "description": "List all lessons."
+          }
+        },
+        {
+          "name": "Get Lesson By ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}lessons/getbyid/1",
+            "description": "Get lesson by lessons_id. Replace 1."
+          }
+        },
+        {
+          "name": "Create Lesson",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Lesson Title\",\n  \"description\": \"Optional description\",\n  \"mentorId\": 3,\n  \"status\": true,\n  \"createdBy\": 3\n}\n"
+            },
+            "url": "{{mentora}}lessons/create",
+            "description": "Create lesson. Title required; mentorId defaults to current user. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Update Lesson",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Updated Title\",\n  \"description\": \"Updated description\",\n  \"mentorId\": 3,\n  \"status\": true,\n  \"updatedBy\": 3\n}\n"
+            },
+            "url": "{{mentora}}lessons/update",
+            "description": "Update lesson by lessons_id (id in body). Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Delete Lesson",
+          "request": {
+            "method": "DELETE",
+            "url": "{{mentora}}lessons/delete/1",
+            "description": "Delete lesson. Replace 1 with lessons_id. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Get Lessons By Mentor ID",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}lessons/getbymentorId/3",
+            "description": "Get lessons by mentor user_id. Replace 3 with mentorId. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Get Lesson Sessions",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}lessons/1/sessions",
+            "description": "Get assign_lessons (sessions) for lesson id. Replace 1. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Assign Lesson - Create",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": 2,\n  \"lessons_id\": 1,\n  \"date\": \"2025-03-08T10:00:00.000Z\",\n  \"topic\": \"Topic name\",\n  \"summary\": \"Optional summary\",\n  \"lessons_status\": \"Pending\",\n  \"status\": true,\n  \"createdBy\": 1\n}\n"
+            },
+            "url": "{{mentora}}lessons/assign/create",
+            "description": "Assign lesson to student. lessons_status: Pending | Success | Process | Failed. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Assign Lesson - Update",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"student_id\": 2,\n  \"lessons_id\": 1,\n  \"date\": \"2025-03-08T12:00:00.000Z\",\n  \"topic\": \"Updated topic\",\n  \"summary\": \"Updated summary\",\n  \"lessons_status\": \"Success\",\n  \"status\": true,\n  \"updatedBy\": 1\n}\n"
+            },
+            "url": "{{mentora}}lessons/assign/update",
+            "description": "Update assignment by assign_lessons_id (id in body). Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Assign Lesson - Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{mentora}}lessons/assign/delete/1",
+            "description": "Delete assignment. Replace 1 with assign_lessons_id. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Assign Lesson - Get By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}lessons/assign/getbyid/1",
+            "description": "Get assignment by assign_lessons_id. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Assign Lesson - Get All",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}lessons/assign/getall",
+            "description": "List all assignments."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Join Lessons",
+      "item": [
+        {
+          "name": "Join Lesson",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assign_lessons_id\": 1,\n  \"student_id\": 2,\n  \"mentor_id\": \"\",\n  \"join_status\": \"Join\"\n}\n"
+            },
+            "url": "{{mentora}}join_lessons/join",
+            "description": "Student joins an assigned lesson. join_status: Join | failed. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Delete Join Lesson",
+          "request": {
+            "method": "DELETE",
+            "url": "{{mentora}}join_lessons/delete/1",
+            "description": "Delete join record. Replace 1 with Join_lessons_id. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Get Join Lesson By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{mentora}}join_lessons/getbyid/1",
+            "description": "Get join by Join_lessons_id. Requires Bearer {{auth}}."
+          }
+        },
+        {
+          "name": "Get All Join Lessons",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{mentora}}join_lessons/getall",
+            "description": "List all join records."
+          }
+        }
+      ]
+    },
+    {
+      "name": "LLM",
+      "item": [
+        {
+          "name": "Summarize Text",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Paste here at least 50 characters of text to summarize. The API returns 3-6 bullet points. Requires OPENAI_API_KEY on server. Rate limited (10/min).\"\n}\n"
+            },
+            "url": "{{mentora}}llm/summarize",
+            "description": "Summarize text via OpenAI. Min 50 chars, max 10000 (or LLM_MAX_TEXT_LENGTH). No auth."
+          }
+        }
+      ]
+    }
+  ]
+}
